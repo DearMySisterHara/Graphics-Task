@@ -50,6 +50,9 @@ BOOL CMFCApplication2View::PreCreateWindow(CREATESTRUCT& cs)
 	return CView::PreCreateWindow(cs);
 }
 
+CPoint pnt;
+COLORREF rectColors[] = { RGB(255, 0, 0), RGB(255, 255, 0), RGB(0, 0, 255)};
+int currentColorIndex = 0; // 현재 텍스트 색상 인덱스
 // CMFCApplication2View 그리기
 void CMFCApplication2View::OnDraw(CDC* pDC)
 {
@@ -57,31 +60,24 @@ void CMFCApplication2View::OnDraw(CDC* pDC)
 	ASSERT_VALID(pDoc);
 	if (!pDoc)
 		return;
-	CPoint mousePos;
-	GetCursorPos(&mousePos);
-	ScreenToClient(&mousePos);
+	CBrush brushRect(rectColors[currentColorIndex]);
+	pDC->SelectObject(&brushRect); 
+	pDC->Rectangle(pnt.x, pnt.y, pnt.x + 50, pnt.y + 50);
 
-	// 별 그리기
-	int starSize = 50; // 별의 크기
-	CPoint vertices[10]; // 별의 꼭짓점 좌표 배열
-	double angle = 3.141592 / 2.0; // 시작 각도
-	double angleIncrement = 2.0 * 3.141592 / 5.0; // 5개의 꼭짓점을 가진 별
+	// 타원 그리기
+	CBrush brushEllipse(rectColors[(currentColorIndex + 1) % 3]); // 다음 색상 선택 
+	pDC->SelectObject(&brushEllipse); 
+	pDC->Ellipse(pnt.x - 50, pnt.y - 50, pnt.x, pnt.y); 
 
-	for (int i = 0; i < 10; i++) {
-		if (i % 2 == 0) {
-			vertices[i].x = mousePos.x + static_cast<int>(cos(angle) * starSize);
-			vertices[i].y = mousePos.y + static_cast<int>(sin(angle) * starSize);
-		}
-		else {
-			vertices[i].x = mousePos.x + static_cast<int>(cos(angle) * (starSize / 2.0));
-			vertices[i].y = mousePos.y + static_cast<int>(sin(angle) * (starSize / 2.0));
-		}
-		angle += angleIncrement;
-	}
+	// 텍스트 출력
+	CFont font; 
+	font.CreatePointFont(200, L"Arial");
+	pDC->SelectObject(&font); 
+	pDC->SetTextColor(rectColors[(currentColorIndex + 2) % 3]); // 다음 색상 선택
+	pDC->TextOut(pnt.x, pnt.y, L"ANU"); 
 
-	pDC->Polygon(vertices, 10); // 별 그리기
-
-	// TODO: 기타 그리기 코드를 추가합니다.
+	// 색상 인덱스 업데이트
+	currentColorIndex = (currentColorIndex + 1) % 3; 
 }
 
 
