@@ -104,7 +104,7 @@ int WINAPI WinMain (HINSTANCE hInstance,
 			glVertex3fv(v2);
 			
 			// 면 2
-			glColor3f(0.0f, 1.0f, 0.0f);
+			glColor3f(0.0f, 2.0f, 0.0f);
 			glVertex3fv(v0);
 			glVertex3fv(v1);
 			glVertex3fv(v3);
